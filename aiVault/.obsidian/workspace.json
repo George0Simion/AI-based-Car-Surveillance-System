@@ -1,0 +1,288 @@
+{
+  "main": {
+    "id": "057e6fae4b9aa9ec",
+    "type": "split",
+    "children": [
+      {
+        "id": "a79c31c6a477d12b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "180501d8e3ba57b6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Numpy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Numpy"
+            }
+          },
+          {
+            "id": "729b639962128402",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Layers.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Layers"
+            }
+          },
+          {
+            "id": "5b39ccc1fdb4473a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Gradient.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Gradient"
+            }
+          },
+          {
+            "id": "c76a9d09fd124bc1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Datasets.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Datasets"
+            }
+          },
+          {
+            "id": "e91f47bf501e05c6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Panda.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Panda"
+            }
+          },
+          {
+            "id": "68396ad60089d216",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "TensorFlow.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "TensorFlow"
+            }
+          },
+          {
+            "id": "11dcb38c9a14109b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AI-based Surveillance System.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AI-based Surveillance System"
+            }
+          },
+          {
+            "id": "0474a6edae90b069",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Car Recognition.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Car Recognition"
+            }
+          }
+        ],
+        "currentTab": 7
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "11a20a95f7ab1169",
+    "type": "split",
+    "children": [
+      {
+        "id": "832b681ef60c750c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f637a4c27dd0f5a8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "7daed501cba5cc2d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "7aa7ad874eecd409",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "53ad3c9e9700946f",
+    "type": "split",
+    "children": [
+      {
+        "id": "f3feaa3d478712ca",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5a113c95b6c202e6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "35031c0dab6433df",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "AI-based Surveillance System.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from AI-based Surveillance System"
+            }
+          },
+          {
+            "id": "a75c7748d9f56d28",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "75cd2bbb7ce6392f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "AI-based Surveillance System.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of AI-based Surveillance System"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "0474a6edae90b069",
+  "lastOpenFiles": [
+    "AI-based Surveillance System.md",
+    "Car Recognition.md",
+    "Diff TF - PyTorch - Panda.md",
+    "TensorFlow.md",
+    "PyTorch.md",
+    "Panda.md",
+    "Datasets.md",
+    "Gradient.md",
+    "Layers.md",
+    "Numpy.md",
+    "Optimezers.md",
+    "AI.md",
+    "[1, 2, 3], [4, 5, 6.md",
+    "1, 2, 3], [4, 5, 6.md",
+    "().md",
+    "AI-based.md"
+  ]
+}
