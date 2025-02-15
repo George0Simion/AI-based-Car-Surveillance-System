@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import pandas as pd
 import torch
-from torchvision.models import resnet101
+from torchvision.models import resnet50, ResNet50_Weights
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
@@ -14,14 +14,14 @@ from sklearn.model_selection import train_test_split
 # -----------------------------
 # PATHS & DIRECTORY HANDLING
 # -----------------------------
-path = "/home/simion/Desktop/AI/data"
+path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data"
 
 
 # -----------------------------
 # CONFIG AND HYPERPARAMETERS
 # -----------------------------
 TARGET_SIZE = (224, 224)   # Dimensiunea imaginilor
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 NUM_EPOCHS = 10
 LEARNING_RATE = 0.001
 STEP_SIZE = 7
@@ -34,7 +34,7 @@ GAMMA = 0.1
 # -> dictionar cu toate folderele si indexul lor
 directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
 data = {directory: i for i, directory in enumerate(directories)}
-
+brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine numele brandurilor dupa label
 
 # -----------------------------
 # DATAFRAME CREATION
@@ -61,13 +61,23 @@ val_df, test_df = train_test_split(temp_df, test_size=0.3333, random_state=42, s
 # -----------------------------
 # TRANSFORM PIPELINE
 # -----------------------------
-transform = transforms.Compose([
+train_transform = transforms.Compose([
     transforms.ToPILImage(), # Convert numpy array to PIL Image
     transforms.Resize(TARGET_SIZE), # Resize image
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(degrees=15), # data augmentation
     transforms.ToTensor(), # Convert PIL Image to tensor
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+# for validation and test set no data augmentation
+eval_transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(TARGET_SIZE),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])
 
 # -----------------------------
 # DATASET CLASS
@@ -100,19 +110,20 @@ class CarDataset(Dataset):
 # -----------------------------
 # DATALOADERS
 # -----------------------------
-train_dataset = CarDataset(train_df, transform=transform)
-val_dataset = CarDataset(val_df, transform=transform)
-test_dataset = CarDataset(test_df, transform=transform)
+train_dataset = CarDataset(train_df, transform=train_transform)
+val_dataset = CarDataset(val_df, transform=eval_transform)
+test_dataset = CarDataset(test_df, transform=eval_transform)
 
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=2)
-test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=2)
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=8)
+val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=8)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=8)
 
 
 # -----------------------------
 # MODEL SETUP
 # -----------------------------
-model = resnet101(pretrained=True) # Load ResNet-101 model
+weights = ResNet50_Weights.IMAGENET1K_V2 # Load weights from ImageNet
+model = resnet50(weights=weights) # Load ResNet-101 model
 
 # Modify the final layer to match the number of car brands
 num_classes = len(directories)
@@ -163,6 +174,7 @@ def validate_model(model, dataloader):
 # TRAINING LOOP
 # -----------------------------
 print("\nStarting Training...\n")
+
 for epoch in range(NUM_EPOCHS):
     model.train()  # training mode
     running_loss = 0.0
@@ -204,3 +216,10 @@ print("\nTraining completed.\n")
 # -----------------------------
 test_accuracy = validate_model(model, test_loader)
 print(f'Test accuracy: {test_accuracy:.2f}%')
+
+
+# -----------------------------
+# Save model
+# -----------------------------
+torch.save(model.state_dict(), 'CarBrandIdentifier_resnet50.pth')
+print("Model saved successfully.")
