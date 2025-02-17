@@ -3,10 +3,11 @@ import numpy as np
 import cv2
 import pandas as pd
 import torch
-from torchvision.models import resnet50, ResNet50_Weights
+from torchvision.models import resnet101, ResNet101_Weights
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
+from pathlib import Path
 
 # Objective -> Car Recognition
 
@@ -16,25 +17,21 @@ from sklearn.model_selection import train_test_split
 # -----------------------------
 path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data"
 
+directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
+data = {directory: i for i, directory in enumerate(directories)}
+brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine numele brandurilor dupa label
+
 
 # -----------------------------
 # CONFIG AND HYPERPARAMETERS
 # -----------------------------
 TARGET_SIZE = (224, 224)   # Dimensiunea imaginilor
 BATCH_SIZE = 16
-NUM_EPOCHS = 10
+NUM_EPOCHS = 20
 LEARNING_RATE = 0.001
 STEP_SIZE = 7
 GAMMA = 0.1
 
-
-# directories = ['Audi', 'BMW', 'Chevrolet', 'Dodge', 'Ford', 'Honda', 'Hyundai', 'Jeep', 'Kia', 'Mazda', 'Mercedes-Benz', 'Nissan', 'Subaru', 'Tesla', 'Toyota', 'Volkswagen', 'Volvo']
-# -> lista cu toate folderele din path
-# data = {'Audi': 0, 'BMW': 1, 'Chevrolet': 2, 'Dodge': 3, 'Ford': 4, 'Honda': 5, 'Hyundai': 6, 'Jeep': 7, 'Kia': 8, 'Mazda': 9, 'Mercedes-Benz': 10, 'Nissan': 11, 'Subaru': 12, 'Tesla': 13, 'Toyota': 14, 'Volkswagen': 15, 'Volvo': 16}
-# -> dictionar cu toate folderele si indexul lor
-directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
-data = {directory: i for i, directory in enumerate(directories)}
-brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine numele brandurilor dupa label
 
 # -----------------------------
 # DATAFRAME CREATION
@@ -42,32 +39,36 @@ brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine
 df = pd.DataFrame(columns=['image_path', 'label'])
 
 for brand in directories:
-    brand_path = os.path.join(path, brand)
-    for image_name in os.listdir(brand_path):
-        image_path = os.path.join(brand_path, image_name)
-        if os.path.isfile(image_path):
-            df.loc[len(df)] = {'image_path': image_path, 'label': data[brand]}
-
+    brand_path = Path(path) / brand
+    # Recursively gather all files
+    for file_path in brand_path.rglob('*.*'):
+        if file_path.is_file():
+            df.loc[len(df)] = {
+                'image_path': str(file_path),
+                'label': data[brand]
+            }
 
 
 # -----------------------------
 # TRAIN / VALIDATION / TEST SPLIT
 # -----------------------------
-# 70% train, 20% val, 10% test (you can adjust to your preference)
-train_df, temp_df = train_test_split(df, test_size=0.3, random_state=42, stratify=df['label'])
-val_df, test_df = train_test_split(temp_df, test_size=0.3333, random_state=42, stratify=temp_df['label'])
+# 70% train, 20% val, 10% test
+train_df, temp_df = train_test_split(df, test_size=0.3, stratify=df['label'], random_state=42)
+val_df, test_df = train_test_split(temp_df, test_size=0.3333, random_state=42)
 
 
 # -----------------------------
 # TRANSFORM PIPELINE
 # -----------------------------
 train_transform = transforms.Compose([
-    transforms.ToPILImage(), # Convert numpy array to PIL Image
-    transforms.Resize(TARGET_SIZE), # Resize image
+    transforms.ToPILImage(),
+    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),  # random crop
     transforms.RandomHorizontalFlip(p=0.5),
-    transforms.RandomRotation(degrees=15), # data augmentation
-    transforms.ToTensor(), # Convert PIL Image to tensor
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.RandomRotation(degrees=15),
+    transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.2),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406],
+                         [0.229, 0.224, 0.225])
 ])
 
 # for validation and test set no data augmentation
@@ -122,15 +123,15 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 # -----------------------------
 # MODEL SETUP
 # -----------------------------
-weights = ResNet50_Weights.IMAGENET1K_V2 # Load weights from ImageNet
-model = resnet50(weights=weights) # Load ResNet-101 model
+weights = ResNet101_Weights.IMAGENET1K_V2 # Load weights from ImageNet
+model = resnet101(weights=weights) # Load ResNet-101 model
 
 # Modify the final layer to match the number of car brands
 num_classes = len(directories)
 model.fc = torch.nn.Linear(in_features=2048, out_features=num_classes)
 
 crit = torch.nn.CrossEntropyLoss() # loss function -> CrossEntropyLoss
-optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE) # optimizer -> Adam
+optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE) # optimizer -> AdamW
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=STEP_SIZE, gamma=GAMMA) # learning rate scheduler
 
 # Hyperparameters
@@ -221,5 +222,5 @@ print(f'Test accuracy: {test_accuracy:.2f}%')
 # -----------------------------
 # Save model
 # -----------------------------
-torch.save(model.state_dict(), 'CarBrandIdentifier_resnet50.pth')
+torch.save(model.state_dict(), 'model2.pth')
 print("Model saved successfully.")

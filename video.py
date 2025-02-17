@@ -38,7 +38,7 @@ brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine
 weights = ResNet50_Weights.IMAGENET1K_V2
 model = resnet50(weights=weights)
 model.fc = torch.nn.Linear(in_features=2048, out_features=len(directories))
-model.load_state_dict(torch.load('CarBrandIdentifier_resnet50.pth', map_location='cpu'))
+model.load_state_dict(torch.load('model1.pth', map_location='cpu'))
 model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
