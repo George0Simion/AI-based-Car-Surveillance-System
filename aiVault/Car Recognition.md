@@ -44,3 +44,12 @@
 	* vedem cat de mult pierdem pe toate batchurile intr=o epoca
 	* masuram acuratetea intregului training
 	* masuram cat de bine identifica masinile pe validation set
+### 10.   VIDEO-UL
+* am luat din nou weight-urile standard si modelul cu ultimul layer avand match numarul de car brand-uri 
+* i am dat load la modelul deja trained si l am evaluat
+* am setat din nou transformarul pt ca trebuie fiecare frame transformat in poze pe care le poate citii modelul cum ar venii
+* folosindu-ma de YOLOv5 am facut un object detection. practic folosesc YOLO ca sa gasesc masinile din cadru si modelul meu pentru a le clasifica
+* functia detect cars face ce am zis mai sus. returneaza o lista cu toate coordonatele de masini din acel frame
+* functia clasify cars transforma frame-ul dat si il trece prin modelul antrenat de mine ca sa vada ce brand e 
+* fucntia process_frame detecteaza masinile, le clasifica si pune pe ecran dreptunghiul cu marca
+* functia de live video le pune pe toate cap la cap -> se foloseste ce cv2 pt a citii video-ul, dupa care citeste fiecare frame, il proceseaza si afiseaza

@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 # -----------------------------
 # PATHS & DIRECTORY HANDLING
 # -----------------------------
-path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data"
+path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data2"
 
 
 # -----------------------------
@@ -38,7 +38,7 @@ brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine
 weights = ResNet50_Weights.IMAGENET1K_V2
 model = resnet50(weights=weights)
 model.fc = torch.nn.Linear(in_features=2048, out_features=len(directories))
-model.load_state_dict(torch.load('model1.pth', map_location='cpu'))
+model.load_state_dict(torch.load('model2.pth', map_location='cpu'))
 model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -106,7 +106,7 @@ def process_frame(frame, model_brand, transform, device, brand_names):
 # VIDEO CAPTURE
 # -----------------------------
 def live_video_interferance():
-    cap = cv2.VideoCapture("myvideo.mp4")
+    cap = cv2.VideoCapture("myvideo1.mp4")
     if not cap.isOpened():
         print("Error opening video stream or file")
         return

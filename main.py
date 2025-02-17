@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import pandas as pd
 import torch
-from torchvision.models import resnet101, ResNet101_Weights
+from torchvision.models import resnet50, ResNet50_Weights
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
@@ -15,7 +15,7 @@ from pathlib import Path
 # -----------------------------
 # PATHS & DIRECTORY HANDLING
 # -----------------------------
-path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data"
+path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data2"
 
 directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
 data = {directory: i for i, directory in enumerate(directories)}
@@ -27,7 +27,7 @@ brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine
 # -----------------------------
 TARGET_SIZE = (224, 224)   # Dimensiunea imaginilor
 BATCH_SIZE = 16
-NUM_EPOCHS = 20
+NUM_EPOCHS = 5
 LEARNING_RATE = 0.001
 STEP_SIZE = 7
 GAMMA = 0.1
@@ -39,8 +39,8 @@ GAMMA = 0.1
 df = pd.DataFrame(columns=['image_path', 'label'])
 
 for brand in directories:
-    brand_path = Path(path) / brand
-    # Recursively gather all files
+    brand_path = Path(path) / brand # Recursively gather all files
+
     for file_path in brand_path.rglob('*.*'):
         if file_path.is_file():
             df.loc[len(df)] = {
@@ -123,8 +123,8 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 # -----------------------------
 # MODEL SETUP
 # -----------------------------
-weights = ResNet101_Weights.IMAGENET1K_V2 # Load weights from ImageNet
-model = resnet101(weights=weights) # Load ResNet-101 model
+weights = ResNet50_Weights.IMAGENET1K_V2 # Load weights from ImageNet
+model = resnet50(weights=weights) # Load ResNet-101 model
 
 # Modify the final layer to match the number of car brands
 num_classes = len(directories)
