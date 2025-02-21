@@ -1,22 +1,50 @@
 import os
+import sys
 import numpy as np
 import cv2
 import pandas as pd
 import torch
-from torchvision.models import resnet50, ResNet50_Weights
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 
+from torchvision.models import resnet18, ResNet18_Weights
+from torchvision.models import resnet50, ResNet50_Weights
+from torchvision.models import resnet101, ResNet101_Weights
+
 # Objective -> Car Recognition
+
+
+# -----------------------------
+# READ COMMAND LINE
+# -----------------------------
+# sanity chech
+if len(sys.argv) != 5:
+    print("Usage: python3 main.py <MODEL_NAME> <NUM_EPOCHS> <DATASET_PATH> <>")
+    print("MODEL_NAME must be one of: resnet18, resnet50, resnet101")
+    sys.exit(1)
+
+model_name = sys.argv[1]
+num_epochs = int(sys.argv[2])
+path = sys.argv[3]
+final_name = sys.argv[4]
+
+# Sanity check
+valid_models = ["resnet18", "resnet50", "resnet101"]
+if model_name not in valid_models:
+    print(f"Error: MODEL_NAME must be one of {valid_models}.")
+    sys.exit(1)
+
+print(f"Using model: {model_name}")
+print(f"Number of epochs: {num_epochs}")
+print(f"Dataset path: {path}")
+print(f"Name: {final_name}")
 
 
 # -----------------------------
 # PATHS & DIRECTORY HANDLING
 # -----------------------------
-path = "/home/simion/Desktop/AI/AI-based-Car-Surveillance-System/data2"
-
 directories = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
 data = {directory: i for i, directory in enumerate(directories)}
 brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine numele brandurilor dupa label
@@ -27,7 +55,7 @@ brand_names = {v: k for k, v in data.items()} # Inversam dictionarul pt a obtine
 # -----------------------------
 TARGET_SIZE = (224, 224)   # Dimensiunea imaginilor
 BATCH_SIZE = 16
-NUM_EPOCHS = 5
+NUM_EPOCHS = num_epochs
 LEARNING_RATE = 0.001
 STEP_SIZE = 7
 GAMMA = 0.1
@@ -123,8 +151,13 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num
 # -----------------------------
 # MODEL SETUP
 # -----------------------------
-weights = ResNet50_Weights.IMAGENET1K_V2 # Load weights from ImageNet
-model = resnet50(weights=weights) # Load ResNet-101 model
+# select pre-trained model
+if model_name == "resnet18":
+    model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
+elif model_name == "resnet50":
+    model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
+elif model_name == "resnet101":
+    model = resnet101(weights=ResNet101_Weights.IMAGENET1K_V2)
 
 # Modify the final layer to match the number of car brands
 num_classes = len(directories)
@@ -222,5 +255,5 @@ print(f'Test accuracy: {test_accuracy:.2f}%')
 # -----------------------------
 # Save model
 # -----------------------------
-torch.save(model.state_dict(), 'model2.pth')
+torch.save(model.state_dict(), final_name)
 print("Model saved successfully.")
