@@ -1,3 +1,0 @@
-[[AI-based Surveillance System]]
-
-
